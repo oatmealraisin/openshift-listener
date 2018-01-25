@@ -23,15 +23,14 @@ items:
           deploymentconfig: listener
       spec:
         containers:
-        - image: listener:latest
-          securityContext:
-             privileged: false
-          name: listener
-          command: [ "listener" ]
+        - name: listener
+          image: listener:latest
           ports:
           - containerPort: 8080
             protocol: TCP
           resources: {}
+          securityContext:
+             privileged: false
     test: false
     triggers:
     - type: ConfigChange
