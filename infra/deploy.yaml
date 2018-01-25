@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: List
+metadata: {}
+items:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: listener
+    name: listener
+  spec:
+    replicas: 1
+    selector:
+      app: listener
+      deploymentconfig: listener
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        labels:
+          app: listener
+          deploymentconfig: listener
+      spec:
+        containers:
+        - image: listener:latest
+          securityContext:
+             privileged: false
+          name: listener
+          command: [ "listener" ]
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: listener
+      deploymentconfig: listener
+    name: listener
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: listener
+      deploymentconfig: listener
+  status:
+    loadBalancer: {}
