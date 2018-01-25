@@ -18,7 +18,7 @@ items:
   metadata:
     creationTimestamp: null
     labels:
-      build: helloworld
+      build: listener
     name: golang
   spec:
     lookupPolicy:
@@ -38,14 +38,14 @@ items:
   kind: BuildConfig
   metadata:
     labels:
-      build: helloworld
-    name: helloworld
+      build: listener
+    name: listener
   spec:
     nodeSelector: null
     output:
       to:
         kind: ImageStreamTag
-        name: helloworld:latest
+        name: listener:latest
     postCommit: {}
     resources: {}
     runPolicy: Serial
