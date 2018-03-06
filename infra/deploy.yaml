@@ -5,7 +5,6 @@ items:
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
-    creationTimestamp: null
     labels:
       app: listener
     name: listener
@@ -23,8 +22,7 @@ items:
           deploymentconfig: listener
       spec:
         containers:
-        - name: listener
-          image: listener:latest
+        - name: listener 
           ports:
           - containerPort: 8080
             protocol: TCP
@@ -34,6 +32,13 @@ items:
     test: false
     triggers:
     - type: ConfigChange
+    - type: ImageChange
+      imageChangeParams:
+        containerNames:
+        - listener
+        from:
+          kind: ImageStreamTag
+          name: listener:latest
 - apiVersion: v1
   kind: Service
   metadata:
