@@ -9,27 +9,35 @@ import (
 )
 
 func HelloWorld(w http.ResponseWriter, req *http.Request) {
-	fmt.Printf("Pong!")
+	fmt.Println("Pong!")
 	fmt.Fprintf(w, "Pong!")
 }
 
 func main() {
-	port := ":8080"
+	host := "listener.svc.cluster.local"
+	port := "8080"
 
 	if len(os.Getenv("PORT_LISTENER")) != 0 {
 		port = os.Getenv("PORT_LISTENER")
 		fmt.Printf("Using port %s...\n", port)
 	}
 
+	if len(os.Getenv("HOST_LISTENER")) != 0 {
+		host = os.Getenv("HOST_LISTENER")
+		fmt.Printf("Using host %s...\n", host)
+	}
+
 	http.HandleFunc("/", HelloWorld)
-	go log.Fatal(http.ListenAndServe(port, nil))
+	go func() {
+		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
+	}()
 
 	for {
-		_, err := http.Get("listener.svc.cluster.local:8080")
+		time.Sleep(5 * time.Second)
+		_, err := http.Get(fmt.Sprintf("http://%s:%s", host, port))
 		fmt.Println("Ping!")
 		if err != nil {
 			fmt.Printf("Received error: %s\n", err.Error())
 		}
-		time.Sleep(5 * time.Second)
 	}
 }
