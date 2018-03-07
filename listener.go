@@ -25,13 +25,11 @@ func main() {
 	go log.Fatal(http.ListenAndServe(port, nil))
 
 	for {
-		resp, err := http.Get("listener.svc.cluster.local:8080")
+		_, err := http.Get("listener.svc.cluster.local:8080")
 		fmt.Println("Ping!")
 		if err != nil {
 			fmt.Printf("Received error: %s\n", err.Error())
 		}
-		defer resp.Body.Close()
-
 		time.Sleep(5 * time.Second)
 	}
 }
