@@ -5,10 +5,12 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 func HelloWorld(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, "Hello world!")
+	fmt.Printf("Pong!")
+	fmt.Fprintf(w, "Pong!")
 }
 
 func main() {
@@ -20,5 +22,16 @@ func main() {
 	}
 
 	http.HandleFunc("/", HelloWorld)
-	log.Fatal(http.ListenAndServe(port, nil))
+	go log.Fatal(http.ListenAndServe(port, nil))
+
+	for {
+		resp, err := http.Get("listener.svc.cluster.local:8080")
+		fmt.Println("Ping!")
+		if err != nil {
+			fmt.Printf("Received error: %s\n", err.Error())
+		}
+		defer resp.Body.Close()
+
+		time.Sleep(5 * time.Second)
+	}
 }
